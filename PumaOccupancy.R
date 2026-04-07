@@ -12,7 +12,7 @@ library(AICcmodavg)
 library(MuMIn)
 library(camtrapR)
 
-#Covariates correlation matrix
+#covariates correlation matrix
 covs <- read.csv("covs_puma.csv", header = TRUE)
 head(covs)
 

@@ -1,5 +1,5 @@
 #Setting the working directory
-setwd("/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Honours_peru/puma_project")
+setwd("/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Honours_peru/puma_project/puma_r")
 
 #Loading the packages from library
 library(unmarked)
@@ -14,7 +14,6 @@ library(dplyr)
 library(tidyverse)
 library(usethis)
 library(devtools)
-devtools::install_github("r-lib/conflicted")
 library(conflicted)
 library(dplyr)
 library(camtrapR)
@@ -23,6 +22,7 @@ library(camtrapR)
 #Covariates correlation matrix
 prey_covs <- read.csv("covs_prey.csv", header = TRUE)
 head(prey_covs)
+getwd()
 
 #puma cam data
 puma_data<-read.csv("cam_puma.csv", header = TRUE)
@@ -77,7 +77,7 @@ opos <- scale(prey_covs$OPOS_captr)
 sarm <- scale(prey_covs$SARM_captr)
 
 summary(opos)
-# Subset continuous covariates
+ # Subset continuous covariates
 continuous_covariates <- prey_covs[, c("AGOU_captr","ACOU_captr","PACA_captr", "BRAB_captr","OPOS_captr", "SARM_captr"  )]
 
 # Correlation matrix
@@ -85,12 +85,14 @@ cor_matrix <- cor(continuous_covariates, use = "complete.obs")
 print("Correlation Matrix:")
 print(cor_matrix)
 
-#make it work faster
+#makes it work faster
 Nthreads <- detectCores() 
 setNumThreads(Nthreads)
 
 UFO_pumaPrey <- unmarkedFrameOccu(y = puma5$detection_history, siteCovs = data.frame(nights, trail, agou, acou, paca, brab, opos, sarm))
 summary(UFO_pumaPrey)
+#0       1     <NA>
+#3000.   293.   2467
 
 #Dredge the global model for all possible combinations
 pumaPrey_dredge <- occu(~nights+trail~ agou+acou+paca+brab+opos+sarm, UFO_pumaPrey) 
@@ -198,14 +200,14 @@ activityDensity(recordTable = pumaPrey_activity,
                 recordDateTimeCol    = "DateTime",
                 species     = "PUMA",
                 writePNG          = TRUE,
-                plotDirectory    = "/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Peru/puma_project",
+                plotDirectory    = "/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Honours_peru/puma_project",
 )
 
 activityHistogram(recordTable = pumaPrey_activity,
                   recordDateTimeCol    = "DateTime",
                   species     = "PUMA",
                   writePNG          = TRUE,
-                  plotDirectory    = "/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Peru/puma_project",
+                  plotDirectory    = "/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Honours_peru/puma_project",
 )
 
 activityRadial(recordTable       = pumaPrey_activity,
@@ -215,7 +217,7 @@ activityRadial(recordTable       = pumaPrey_activity,
                recordDateTimeCol = "DateTime",
                plotR             = TRUE,
                writePNG          = TRUE,
-               plotDirectory     = "/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Peru/puma_project",
+               plotDirectory     = "/Users/dwijadesai/Library/CloudStorage/OneDrive-UBC/Honours_peru/puma_project",
                lwd               = 3,
                rp.type           = "p",     # plot type = polygon
                poly.col          = gray(0.5, alpha = 0.5),  # optional. remove for no fill 
@@ -263,12 +265,19 @@ sarm.tr<- timeradians[pumaPrey_activity$Species == 'SARM']
 paca.tr<- timeradians[pumaPrey_activity$Species == 'PACA']
 
 length(puma.tr)
+#404
 length(agou.tr)
+#2101
 length(acou.tr)
+#384
 length(brab.tr)
+#201
 length(opos.tr)
+#885
 length(sarm.tr)
+#428
 length(paca.tr)
+#1047
 
 #puma vs agouti
 overlapPlot(puma.tr, agou.tr, 
